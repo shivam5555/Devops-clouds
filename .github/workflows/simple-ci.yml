@@ -1,0 +1,41 @@
+name: Simple CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - ci-cd-github-actions-20250214-055250  # Change this to match your branch
+
+jobs:
+  check-system:
+    name: Check System Details
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Display System Info
+        run: |
+          echo "🖥️ Running on $(uname -a)"
+          echo "📂 Current Directory: $(pwd)"
+          echo "👤 User: $(whoami)"
+
+  run-script:
+    name: Run a Bash Script
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create and Execute a Script
+        run: |
+          echo "#!/bin/bash" > script.sh
+          echo "echo 'Hello from GitHub Actions!'" >> script.sh
+          chmod +x script.sh
+          ./script.sh
