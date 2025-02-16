@@ -1,0 +1,38 @@
+pipeline {
+    agent any  // Runs on any available Jenkins agent
+
+    environment {
+        GIT_REPO_URL = 'https://github.com/shivam5555/Devops-clouds.git'
+        GIT_BRANCH = 'main'  // Change to your actual branch name if different
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: GIT_BRANCH, url: GIT_REPO_URL
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'echo "Building the application..."'
+                sh 'sleep 2'  // Simulating build time
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'echo "Running tests..."'
+                sh 'sleep 2'  // Simulating tests
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'echo "Deploying application..."'
+                sh 'sleep 2'  // Simulating deployment
+            }
+        }
+    }
+}
+

@@ -1,0 +1,64 @@
+🔹 Step 1: Integrate Git with Jenkins
+🔹 Install Git Plugin in Jenkins
+1️⃣ Open Jenkins Dashboard (http://localhost:8080)
+2️⃣ Click "Manage Jenkins" → "Manage Plugins"
+3️⃣ Go to "Available" tab
+4️⃣ Search for "Git plugin"
+5️⃣ Install Git Plugin and restart Jenkins
+
+🔹 Configure Global Git Settings
+1️⃣ Go to "Manage Jenkins" → "Global Tool Configuration"
+2️⃣ Find "Git", click "Add Git"
+3️⃣ Set:
+
+Name: Default Git
+Path: Run which git in WSL and copy the path (e.g., /usr/bin/git)
+4️⃣ Click Save
+✅ Now Git is ready to use in Jenkins!
+
+🔹 Step 2: Run a Script in Jenkins
+Create a New Freestyle Job
+1️⃣ Click "New Item"
+2️⃣ Enter Job Name (e.g., RunShellScript)
+3️⃣ Select "Freestyle project" → Click OK
+4️⃣ Scroll to "Build" → "Add build step" → "Execute shell"
+5️⃣ Paste this simple script:
+
+bash
+Copy
+Edit
+echo "Hello from Jenkins!"
+date
+ls -la
+6️⃣ Click Save → Build Now
+7️⃣ Click "Console Output" to see results
+
+✅ Jenkins successfully ran a script! 🎉
+
+🔹 Step 3: Clone a Git Repository and Run a Script
+1️⃣ Create a New Job
+1️⃣ Click "New Item"
+2️⃣ Enter Job Name (e.g., GitCloneJob)
+3️⃣ Select "Freestyle project" → Click OK
+
+2️⃣ Configure Git Repository
+1️⃣ Scroll to "Source Code Management"
+2️⃣ Select "Git"
+3️⃣ Enter your repository URL (e.g., https://github.com/your-username/your-repo.git)
+4️⃣ If the repo is private, add credentials
+5️⃣ Click Save
+
+3️⃣ Run a Shell Script After Cloning
+1️⃣ Scroll to "Build" → "Add build step" → "Execute shell"
+2️⃣ Add:
+
+bash
+Copy
+Edit
+echo "Repo cloned successfully!"
+cd $WORKSPACE
+ls -la
+3️⃣ Click Save → Build Now
+4️⃣ Click "Console Output"
+
+✅ Now Jenkins clones a Git repository and runs a script! 🎉
