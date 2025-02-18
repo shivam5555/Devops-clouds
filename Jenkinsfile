@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'ci-cd-jenkins', url: 'https://github.com/shivam5555/Devops-Cloud.git'
+                git branch: 'ci-cd-jenkins-20250217-015256', url: 'https://github.com/shivam5555/Devops-Clouds.git'
             }
         }
 
