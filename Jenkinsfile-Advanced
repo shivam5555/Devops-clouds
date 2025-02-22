@@ -14,7 +14,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo "Checking out branch: ${BRANCH_NAME}"
-                git branch: "${main}", url: 'https://github.com/shivam5555/Devops-Cloud.git'
+                git branch: "${BRANCH_NAME}", url: 'https://github.com/shivam5555/Devops-Cloud.git'
             }
         }
 
