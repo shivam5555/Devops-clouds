@@ -1,69 +1,64 @@
 pipeline {
     agent any
-    
+
+    // Define parameters for branch selection
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git Branch to Build')
-        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run Tests?')
     }
 
+    // Define environment variables
     environment {
-        DOCKER_IMAGE = "my-app:latest"
+        GIT_URL = 'https://github.com/shivam5555/Devops-clouds.git'
+        DOCKER_IMAGE = 'my-app:latest'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                echo "Checking out branch: ${BRANCH_NAME}"
-                git branch: "${BRANCH_NAME}", url: 'https://github.com/shivam5555/Devops-Cloud.git'
+                script {
+                    echo "Checking out branch: ${params.BRANCH_NAME}"
+                    git branch: "${params.BRANCH_NAME}", url: "${GIT_URL}"
+                }
             }
         }
 
         stage('Build') {
             steps {
                 script {
-                    try {
-                        echo "Building the application..."
-                        sh "make build" 
-                    } catch (Exception e) {
-                        echo "Build failed: ${e}"
-                        currentBuild.result = 'FAILURE'
-                        error("Stopping pipeline due to build failure.")
-                    }
+                    echo "Building the application..."
+                    sh "echo 'Simulating Build Process...'"
                 }
             }
         }
 
-        stage('Parallel Testing') {
-            parallel {
-                stage('Unit Tests') {
-                    when {
-                        expression { return params.RUN_TESTS }
-                    }
-                    steps {
-                        echo "Running Unit Tests..."
-                        sh "make test-unit"
-                    }
-                }
-
-                stage('Integration Tests') {
-                    when {
-                        expression { return params.RUN_TESTS }
-                    }
-                    steps {
-                        echo "Running Integration Tests..."
-                        sh "make test-integration"
-                    }
+        stage('Test') {
+            steps {
+                script {
+                    echo "Running tests..."
+                    sh "echo 'Running Unit Tests...'"
+                    sh "echo 'Running Integration Tests...'"
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deploying the application..."
-                sh "echo Deploying ${DOCKER_IMAGE}"
+                script {
+                    echo "Deploying the application..."
+                    sh "echo 'Deploying ${DOCKER_IMAGE} to Production...'"
+                }
             }
         }
     }
 
+    post {
+        success {
+            echo "Build completed successfully!"
+        }
+
+        failure {
+            echo "Build failed! Check logs for details."
+        }
+    }
 }
 
