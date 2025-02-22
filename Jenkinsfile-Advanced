@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+    
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Git Branch to Build')
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run Tests?')
+    }
+
+    environment {
+        DOCKER_IMAGE = "my-app:latest"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo "Checking out branch: ${BRANCH_NAME}"
+                git branch: "${BRANCH_NAME}", url: 'https://github.com/your-username/Devops-Cloud.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    try {
+                        echo "Building the application..."
+                        sh "make build" 
+                    } catch (Exception e) {
+                        echo "Build failed: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        error("Stopping pipeline due to build failure.")
+                    }
+                }
+            }
+        }
+
+        stage('Parallel Testing') {
+            parallel {
+                stage('Unit Tests') {
+                    when {
+                        expression { return params.RUN_TESTS }
+                    }
+                    steps {
+                        echo "Running Unit Tests..."
+                        sh "make test-unit"
+                    }
+                }
+
+                stage('Integration Tests') {
+                    when {
+                        expression { return params.RUN_TESTS }
+                    }
+                    steps {
+                        echo "Running Integration Tests..."
+                        sh "make test-integration"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying the application..."
+                sh "echo Deploying ${DOCKER_IMAGE}"
+            }
+        }
+    }
+
+    post {
+        failure {
+            mail to: 'admin@example.com',
+                 subject: "Build Failed: ${currentBuild.fullDisplayName}",
+                 body: "Check Jenkins for details."
+        }
+    }
+}
+
