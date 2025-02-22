@@ -65,12 +65,5 @@ pipeline {
         }
     }
 
-    //post {
-      //  failure {
-        //    mail to: 'admin@example.com',
-          //       subject: "Build Failed: ${currentBuild.fullDisplayName}",
-                 body: "Check Jenkins for details."
-       // }
-   // }
 }
 
