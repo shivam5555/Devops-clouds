@@ -14,7 +14,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo "Checking out branch: ${BRANCH_NAME}"
-                git branch: "${BRANCH_NAME}", url: 'https://github.com/your-username/Devops-Cloud.git'
+                git branch: "${main}", url: 'https://github.com/shivam5555/Devops-Cloud.git'
             }
         }
 
@@ -65,12 +65,12 @@ pipeline {
         }
     }
 
-    post {
-        failure {
-            mail to: 'admin@example.com',
-                 subject: "Build Failed: ${currentBuild.fullDisplayName}",
+    //post {
+      //  failure {
+        //    mail to: 'admin@example.com',
+          //       subject: "Build Failed: ${currentBuild.fullDisplayName}",
                  body: "Check Jenkins for details."
-        }
-    }
+       // }
+   // }
 }
 
