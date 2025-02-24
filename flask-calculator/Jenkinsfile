@@ -28,12 +28,22 @@ pipeline {
 
         stage('Deploy Container') {
             steps {
-                sh """
-                docker stop flask-calculator || true
-                docker rm flask-calculator || true
-                docker pull ${DOCKER_IMAGE}
-                docker run -d -p 5000:5000 --name flask-calculator ${DOCKER_IMAGE}
-                """
+		script {
+            sh """
+            echo "🔄 Stopping any existing container..."
+            docker stop flask-calculator || true
+            docker rm flask-calculator || true
+
+            echo "📥 Pulling the latest image..."
+            docker pull ${DOCKER_IMAGE}
+
+            echo "🚀 Running Flask Calculator container..."
+            docker run -d -p 5000:5000 --name flask-calculator ${DOCKER_IMAGE}
+
+            echo "✅ Deployment Complete. Checking running containers..."
+            docker ps
+            """
+               
             }
         }
     }
