@@ -2,58 +2,63 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "sanjishiva5/flask-calculator"
+        DOCKER_IMAGE = "sanjishiva5/flask-calculator:latest"
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'ci-cd-jenkins-docker-python', url: 'https://github.com/shivam5555/Devops-clouds.git'
+                git branch: 'ci-cd-jenkins-docker-python', url: 'https://github.com/shivam5555/Devops-Clouds.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE} ."
+                sh """
+                echo "🛠️ Building Docker Image..."
+                docker build -t ${DOCKER_IMAGE} .
+                """
             }
         }
 
         stage('Push Image to Docker Hub') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://hub.docker.com/repositories/sanjishiva5') {
-                    sh "docker push ${DOCKER_IMAGE}"
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                    sh """
+                    echo "🚀 Pushing Docker Image to Docker Hub..."
+                    docker push ${DOCKER_IMAGE}
+                    """
                 }
             }
         }
 
         stage('Deploy Container') {
             steps {
-		script {
-            sh """
-            echo "🔄 Stopping any existing container..."
-            docker stop flask-calculator || true
-            docker rm flask-calculator || true
+                sh """
+                echo "🔄 Stopping and Removing any existing container..."
+                docker stop flask-calculator || true
+                docker rm flask-calculator || true
+                
+                echo "📥 Pulling latest Docker Image..."
+                docker pull ${DOCKER_IMAGE}
 
-            echo "📥 Pulling the latest image..."
-            docker pull ${DOCKER_IMAGE}
-
-            echo "🚀 Running Flask Calculator container..."
-            docker run -d -p 5000:5000 --name flask-calculator ${DOCKER_IMAGE}
-
-            echo "✅ Deployment Complete. Checking running containers..."
-            docker ps
-            """
-               
+                echo "🚀 Running Flask Calculator Container..."
+                docker run -d -p 5000:5000 --name flask-calculator ${DOCKER_IMAGE}
+                
+                echo "✅ Deployment Complete. Checking running containers..."
+                sleep 5
+                docker ps
+                """
             }
         }
     }
 
     post {
         success {
-            echo "✅ Deployment Successful!"
+            echo "✅ Deployment Successful! Application is running on port 5000."
         }
         failure {
-            echo "❌ Deployment Failed! Check logs."
+            echo "❌ Deployment Failed! Check logs for details."
         }
     }
 }
