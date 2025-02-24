@@ -1,63 +1,29 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = "sanjishiva5/flask-api:latest"
-    }
-
     stages {
-        stage('Checkout Code') {
+        stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/shivam5555/ci-cd-jenkins-docker-python'
+                git branch: 'ci-cd-jenkins-20250217-015256', url: 'https://github.com/shivam5555/Devops-Clouds.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
-                sh '''
-                echo "🛠️ Building Docker Image..."
-                docker build -t ${DOCKER_IMAGE} .
-                '''
+                sh 'echo Building the application shivam ..."'
             }
         }
 
-        stage('Push Image to Docker Hub') {
+        stage('Test') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh '''
-                    echo "🚀 Pushing Docker Image to Docker Hub..."
-                    docker push ${DOCKER_IMAGE}
-                    '''
-                }
+                sh 'echo "Running tests..."'
             }
         }
 
-        stage('Deploy Container') {
+        stage('Deploy') {
             steps {
-                sh '''
-                echo "🔄 Stopping existing container..."
-                docker stop flask-api || true
-                docker rm flask-api || true
-
-                echo "📥 Pulling latest Docker Image..."
-                docker pull ${DOCKER_IMAGE}
-
-                echo "🚀 Running Flask API Container..."
-                docker run -d -p 5000:5000 --name flask-api ${DOCKER_IMAGE}
-
-                echo "✅ Deployment Complete!"
-                docker ps
-                '''
+                sh 'echo "Deploying application..."'
             }
-        }
-    }
-
-    post {
-        success {
-            echo "✅ Deployment Successful! Flask API is running on port 5000."
-        }
-        failure {
-            echo "❌ Deployment Failed! Check logs for details."
         }
     }
 }
