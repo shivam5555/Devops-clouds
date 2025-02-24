@@ -12,15 +12,14 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                sh """
-                echo "🛠️ Building Docker Image..."
-                docker build -t ${DOCKER_IMAGE} .
-                """
-            }
-        }
-
+	stage('Build') {
+    	    steps {
+        	   sh '''
+        	   echo "🛠️ Building Docker Image..."
+        	   docker build -t ${DOCKER_IMAGE} .
+        	   '''
+    }
+}
         stage('Push Image to Docker Hub') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
@@ -33,25 +32,24 @@ pipeline {
         }
 
         stage('Deploy Container') {
-            steps {
-                sh """
-                echo "🔄 Stopping and Removing any existing container..."
-                docker stop flask-calculator || true
-                docker rm flask-calculator || true
-                
-                echo "📥 Pulling latest Docker Image..."
-                docker pull ${DOCKER_IMAGE}
+    	   steps {
+                 sh '''
+        	 echo "🔄 Stopping any existing container..."
+        	 docker stop flask-calculator || true
+        	 docker rm flask-calculator || true
 
-                echo "🚀 Running Flask Calculator Container..."
-                docker run -d -p 5000:5000 --name flask-calculator ${DOCKER_IMAGE}
-                
-                echo "✅ Deployment Complete. Checking running containers..."
-                sleep 5
-                docker ps
-                """
-            }
-        }
-    
+        	 echo "📥 Pulling latest Docker Image..."
+        	 docker pull ${DOCKER_IMAGE}
+
+        	 echo "🚀 Running Flask Calculator Container..."
+        	 docker run -d -p 5000:5000 --name flask-calculator ${DOCKER_IMAGE}
+
+        	 echo "✅ Deployment Complete. Checking running containers..."
+        	 sleep 5
+        	 docker ps
+        	 '''
+    }
+} 
 
     post {
         success {
