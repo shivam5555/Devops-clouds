@@ -10,19 +10,19 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'echo Building the application shivam ..."'
+                sh #!/bin/bash 'echo Building the application shivam ..."'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'echo "Running tests..."'
+                sh #!/bin/bash 'echo "Running tests..."'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'echo "Deploying application..."'
+                sh #!/bin/bash 'echo "Deploying application..."'
             }
         }
     }
