@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "sanjishiva5/flask-calculator:latest"
+        DOCKER_IMAGE = "sanjishiva5/flask-calculator"
     }
 
     stages {
