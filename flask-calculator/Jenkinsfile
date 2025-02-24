@@ -36,18 +36,18 @@ pipeline {
             steps {
                 sh """
                 echo "🔄 Stopping and Removing any existing container..."
-                docker stop flask-calculator || true
-                docker rm flask-calculator || true
+                sudo docker stop flask-calculator || true
+                sudo docker rm flask-calculator || true
                 
                 echo "📥 Pulling latest Docker Image..."
-                docker pull ${DOCKER_IMAGE}
+                sudo docker pull ${DOCKER_IMAGE}
 
                 echo "🚀 Running Flask Calculator Container..."
-                docker run -d -p 5000:5000 --name flask-calculator ${DOCKER_IMAGE}
+                sudo docker run -d -p 5000:5000 --name flask-calculator ${DOCKER_IMAGE}
                 
                 echo "✅ Deployment Complete. Checking running containers..."
                 sleep 5
-                docker ps
+                sudo docker ps
                 """
             }
         }
