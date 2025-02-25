@@ -15,7 +15,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh '''#!/bin/bash
-                echo "🛠️ Building Docker Image..."
+                echo "🛠️ shivam Building Docker Image..."
                 docker build -t ${DOCKER_IMAGE} .
                 '''
             }
