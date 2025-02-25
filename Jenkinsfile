@@ -1,29 +1,63 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = "sanjishiva5/fibonacci-api:latest"
+    }
+
     stages {
-        stage('Clone Repository') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'ci-cd-jenkins-20250217-015256', url: 'https://github.com/shivam5555/Devops-Clouds.git'
+                git branch: 'main', url: 'https://github.com/shivam5555/Devops-clouds.git'
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                sh 'echo "Building the application...Shiva is entenal truth"'
+                sh '''#!/bin/bash
+                echo "🛠️ Building Docker Image..."
+                docker build -t ${DOCKER_IMAGE} .
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Push Image to Docker Hub') {
             steps {
-                sh 'echo "Running tests..."'
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                    sh '''#!/bin/bash
+                    echo "🚀 Pushing Docker Image to Docker Hub..."
+                    docker push ${DOCKER_IMAGE}
+                    '''
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Container') {
             steps {
-                sh 'echo "Deploying application..."'
+                sh '''#!/bin/bash
+                echo "🔄 Stopping existing container..."
+                docker stop fibonacci-api || true
+                docker rm fibonacci-api || true
+
+                echo "📥 Pulling latest Docker Image..."
+                docker pull ${DOCKER_IMAGE}
+
+                echo "🚀 Running Fibonacci API Container..."
+                docker run -d -p 5000:5000 --name fibonacci-api ${DOCKER_IMAGE}
+
+                echo "✅ Deployment Complete!"
+                docker ps
+                '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Deployment Successful! Fibonacci API is running on port 5000."
+        }
+        failure {
+            echo "❌ Deployment Failed! Check logs for details."
         }
     }
 }
